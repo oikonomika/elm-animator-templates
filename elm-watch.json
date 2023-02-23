@@ -1,6 +1,6 @@
 {
     "targets": {
-        "example-elm-animator": {
+        "elm-animator-templates": {
             "inputs": [
                 "src/Main.elm"
             ],
