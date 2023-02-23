@@ -48,7 +48,10 @@ update msg model =
                     Animator.current model.countOfClick
             in
             ( { model
-                | countOfClick = Animator.go Animator.slowly (current + 1) model.countOfClick
+                | countOfClick = Animator.interrupt
+                    [ Animator.event (Animator.seconds 1) (current + 2)
+                    , Animator.event (Animator.immediately) (current + 1)
+                    ] model.countOfClick
               }
             , Cmd.none
             )

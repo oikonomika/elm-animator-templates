@@ -1,0 +1,10 @@
+{
+    "targets": {
+        "example-elm-animator": {
+            "inputs": [
+                "src/Main.elm"
+            ],
+            "output": "public/dist/elm.compiled.js"
+        }
+    }
+}

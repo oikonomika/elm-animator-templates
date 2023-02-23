@@ -1,10 +1,9 @@
-# Created by https://www.toptal.com/developers/gitignore/api/elm
-# Edit at https://www.toptal.com/developers/gitignore?templates=elm
-
 ### Elm ###
+# Dependency directories
+node_modules/
 # elm-package generated files
 elm-stuff
 # elm-repl generated files
 repl-temp-*
-
-# End of https://www.toptal.com/developers/gitignore/api/elm
+# elm-watch genereted files
+public/dist
