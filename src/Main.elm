@@ -1,7 +1,6 @@
 module Main exposing (..)
 
 import Animator exposing (Animator, Timeline)
-import Animator.Inline as Inline
 import Browser
 import Element exposing (..)
 import Element.Input as Input
@@ -73,16 +72,12 @@ viewButton model =
                 [ width <| px 32
                 , height <| px 32
                 , Background.color white
-                , htmlAttribute 
-                    <| Inline.xy model.checked <| \state ->
+                , moveRight
+                    <| Animator.move model.checked <| \state ->
                         if state then
-                            { x = Animator.at 0
-                            , y = Animator.at 0
-                            }
+                            Animator.at (32 * 2)
                         else
-                            { x = Animator.at (32 * 2)
-                            , y = Animator.at 0
-                            }
+                            Animator.at 0
                 ]
                 Element.none
         , checked = model.checked |> Animator.current
