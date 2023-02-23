@@ -3,32 +3,41 @@ module Main exposing (..)
 import Animator exposing (Animator, Timeline)
 import Animator.Inline as Inline
 import Browser
-import Element exposing (Element, centerX, centerY, htmlAttribute, text)
+import Element exposing (..)
 import Element.Input as Input
+import Element.Border as Border
+import Element.Background as Background
 import Html exposing (Html)
 import Time
 
 
+white: Color
+white = rgb255 255 255 255
+
+slate: Color
+slate = rgb255 80 86 90
+
+
 type Msg
     = Tick Time.Posix
-    | OnClick
+    | Check Bool
 
 
 type alias Model =
-    { countOfClick : Timeline Int
+    { checked : Timeline Bool
     }
 
 
 initialModel : Model
 initialModel =
-    { countOfClick = Animator.init 0
+    { checked = Animator.init False
     }
 
 
 animator : Animator Model
 animator =
     Animator.animator
-        |> Animator.watching .countOfClick (\countOfClick model -> { model | countOfClick = countOfClick })
+        |> Animator.watching .checked (\checked model -> { model | checked = checked })
 
 
 subscriptions : Model -> Sub Msg
@@ -42,16 +51,9 @@ update msg model =
         Tick posix ->
             ( Animator.update posix animator model, Cmd.none )
 
-        OnClick ->
-            let
-                current =
-                    Animator.current model.countOfClick
-            in
+        Check checked ->
             ( { model
-                | countOfClick = Animator.interrupt
-                    [ Animator.event (Animator.seconds 1) (current + 2)
-                    , Animator.event (Animator.immediately) (current + 1)
-                    ] model.countOfClick
+                | checked = Animator.go Animator.slowly checked model.checked
               }
             , Cmd.none
             )
@@ -59,14 +61,32 @@ update msg model =
 
 viewButton : Model -> Element Msg
 viewButton model =
-    Input.button
-        [ htmlAttribute <|
-            Inline.scale model.countOfClick <|
-                \state ->
-                    Animator.at (toFloat state + 1.0)
+    Input.checkbox
+        [ Border.width 1
+        , width <| px (32 * 3 + 8 * 2)
+        , padding 8
+        , Background.color slate
         ]
-        { onPress = Just OnClick
-        , label = text "Enlarge"
+        { onChange = Check
+        , icon = \_ ->
+            Element.el
+                [ width <| px 32
+                , height <| px 32
+                , Background.color white
+                , htmlAttribute 
+                    <| Inline.xy model.checked <| \state ->
+                        if state then
+                            { x = Animator.at 0
+                            , y = Animator.at 0
+                            }
+                        else
+                            { x = Animator.at (32 * 2)
+                            , y = Animator.at 0
+                            }
+                ]
+                Element.none
+        , checked = model.checked |> Animator.current
+        , label = Input.labelHidden"check me"
         }
 
 
